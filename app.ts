@@ -12,7 +12,7 @@ import passport from "passport";
 import passportAzureAd from "passport-azure-ad";
 import connectMongo from "./config/database.config"
 import authConfig from "./authConfig";
-import usersService from "services/users.service";
+import usersService from "./services/users.service";
 
 
 

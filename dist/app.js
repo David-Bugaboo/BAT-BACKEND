@@ -23,6 +23,7 @@ const passport_1 = __importDefault(require("passport"));
 const passport_azure_ad_1 = __importDefault(require("passport-azure-ad"));
 const database_config_1 = __importDefault(require("./config/database.config"));
 const authConfig_1 = __importDefault(require("./authConfig"));
+const users_service_1 = __importDefault(require("./services/users.service"));
 const app = (0, express_1.default)();
 /**
  * If your app is behind a proxy, reverse proxy or a load balancer, consider
@@ -45,6 +46,7 @@ const limiter = (0, express_rate_limit_1.default)({
 });
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
+app.set('trust proxy', 1);
 /**
  * Enable CORS middleware. In production, modify as to allow only designated origins and methods.
  * If you are using Azure App Service, we recommend removing the line below and configure CORS on the App Service itself.
@@ -127,13 +129,17 @@ app.use("/api", (req, res, next) => {
         }
         user = yield users_model_1.default.findOne({ email: info.preferred_username });
         console.log(user);
-        /*if (user) {
-          req.user = user;
-          return next();
-        } else {
-          console.log("User not found");
-          return res.status(404).json({ error: "User not found" });
-        }*/
+        if (user) {
+            req.user = user;
+        }
+        else {
+            const newUser = users_service_1.default.createUser({
+                name: info.name,
+                email: info.preferred_username,
+                roles: ["observable"]
+            });
+            req.user = newUser;
+        }
     }))(req, res, next);
 });
 app.get("/", (req, res) => {
