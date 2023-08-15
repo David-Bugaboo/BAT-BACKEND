@@ -12,6 +12,7 @@ import passport from "passport";
 import passportAzureAd from "passport-azure-ad";
 import connectMongo from "./config/database.config"
 import authConfig from "./authConfig";
+import usersService from "services/users.service";
 
 
 
@@ -156,14 +157,17 @@ app.use(
 
         user = await usersModel.findOne({ email: info.preferred_username });
         console.log(user);
-
-        /*if (user) {
-          req.user = user;
-          return next();
-        } else {
-          console.log("User not found");
-          return res.status(404).json({ error: "User not found" });
-        }*/
+        if (user) {
+          req.user = user
+        }
+        else {
+          const newUser = usersService.createUser({
+            name: info.name,
+            email: info.preferred_username,
+            roles: ["observable"]
+          })
+          req.user = newUser
+        }
       }
     )(req, res, next);
   }
