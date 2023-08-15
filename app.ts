@@ -43,6 +43,8 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
 
+app.set('trust proxy', 1)
+
 /**
  * Enable CORS middleware. In production, modify as to allow only designated origins and methods.
  * If you are using Azure App Service, we recommend removing the line below and configure CORS on the App Service itself.
@@ -117,7 +119,7 @@ passport.use(bearerStrategy);
 app.use(
   "/api",
 
-  (req:any, res:any, next) => {
+  (req: any, res: any, next) => {
     passport.authenticate(
       "oauth-bearer",
       {
@@ -176,7 +178,7 @@ app.use("/api", usersRouter);
 
 app.use("/api", reportRouter);
 
-app.get("/api/me", async (req:any, res:any) => {
+app.get("/api/me", async (req: any, res: any) => {
   console.log("passou aqui");
   console.log(req.authInfo);
   const me = await usersModel.findOne({
