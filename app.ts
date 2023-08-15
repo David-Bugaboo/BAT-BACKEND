@@ -3,17 +3,18 @@ import usersModel from "./models/users.model";
 import { reportRouter } from "./routes/reports.routes";
 import { usersRouter } from "./routes/users.routes";
 
-const express = require("express");
-const morgan = require("morgan");
+import express from "express";
+import morgan from "morgan";
 import cors from "cors";
-const rateLimit = require("express-rate-limit");
+import rateLimit from "express-rate-limit";
 
-const passport = require("passport");
-const passportAzureAd = require("passport-azure-ad");
+import passport from "passport";
+import passportAzureAd from "passport-azure-ad";
+import connectMongo from "./config/database.config"
+import authConfig from "./authConfig";
 
-const authConfig = require("./authConfig");
-const router = require("./routes/index");
-const { connectToMongoDb } = require("./config/database.config");
+
+
 
 const app = express();
 
@@ -116,7 +117,7 @@ passport.use(bearerStrategy);
 app.use(
   "/api",
 
-  (req, res, next) => {
+  (req:any, res:any, next) => {
     passport.authenticate(
       "oauth-bearer",
       {
@@ -163,10 +164,8 @@ app.use(
         }*/
       }
     )(req, res, next);
-  },
+  }
 
-  router
-  // the router with all the routes
 );
 
 app.get("/", (req, res) => {
@@ -177,7 +176,7 @@ app.use("/api", usersRouter);
 
 app.use("/api", reportRouter);
 
-app.get("/api/me", async (req, res) => {
+app.get("/api/me", async (req:any, res:any) => {
   console.log("passou aqui");
   console.log(req.authInfo);
   const me = await usersModel.findOne({
@@ -193,10 +192,12 @@ app.get("/api/me", async (req, res) => {
 
 const port = process.env.PORT || 5000;
 
-connectToMongoDb();
+connectMongo();
 
 app.listen(port, () => {
   console.log("BAT POC Server started " + port);
 });
 
 module.exports = app;
+
+

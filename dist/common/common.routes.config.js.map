@@ -1,0 +1,1 @@
+{"version":3,"file":"common.routes.config.js","sourceRoot":"","sources":["../../common/common.routes.config.ts"],"names":[],"mappings":";;;AAEA,MAAsB,kBAAkB;IAKtC,YAAY,GAAwB,EAAE,IAAY;QAChD,IAAI,CAAC,GAAG,GAAG,GAAG,CAAC;QACf,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;QACjB,IAAI,CAAC,eAAe,EAAE,CAAC;IACzB,CAAC;IAED,YAAY;QACV,OAAO,IAAI,CAAC,IAAI,CAAC;IACnB,CAAC;CAGF;AAhBD,gDAgBC"}
