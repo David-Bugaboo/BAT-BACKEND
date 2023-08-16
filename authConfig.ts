@@ -18,12 +18,12 @@ export const passportConfig = {
     todolist: {
       endpoint: "/api/todolist",
       delegatedPermissions: {
-        read: ["Todolist.Read", "Todolist.ReadWrite"],
+        read: ["BAT.Read", "BAT.ReadWrite"],
         write: ["Todolist.ReadWrite"],
       },
       applicationPermissions: {
-        read: ["Todolist.Read.All", "Todolist.ReadWrite.All"],
-        write: ["Todolist.ReadWrite.All"],
+        read: ["BAT.Read.All", "BAT.ReadWrite.All"],
+        write: ["BAT.ReadWrite.All"],
       },
     },
   },
