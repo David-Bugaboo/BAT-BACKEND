@@ -151,7 +151,6 @@ app.use(
         if (info) {
           // access token payload will be available in req.authInfo downstream
           req.authInfo = info;
-          console.log("info >>>>", req.authInfo);
           return next();
         }
 
@@ -161,12 +160,20 @@ app.use(
           req.user = user
         }
         else {
-          const newUser = usersService.createUser({
-            name: info.name,
-            email: info.preferred_username,
-            roles: ["observable"]
-          })
-          req.user = newUser
+          try{
+            const newUser = await usersService.createUser({
+              name: info.name,
+              email: info.preferred_username,
+              roles: ["observable"]
+            })
+            req.user = newUser
+          }
+          catch(e:any){
+            console.error(e);
+            return res.status(404).json(e);
+          }
+          
+          
         }
       }
     )(req, res, next);
