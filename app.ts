@@ -10,12 +10,9 @@ import rateLimit from "express-rate-limit";
 
 import passport from "passport";
 import passportAzureAd from "passport-azure-ad";
-import connectMongo from "./config/database.config"
+import connectMongo from "./config/database.config";
 import authConfig from "./authConfig";
 import usersService from "./services/users.service";
-
-
-
 
 const app = express();
 
@@ -44,7 +41,7 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
 
-app.set('trust proxy', 1)
+app.set("trust proxy", 1);
 
 /**
  * Enable CORS middleware. In production, modify as to allow only designated origins and methods.
@@ -151,34 +148,30 @@ app.use(
         if (info) {
           // access token payload will be available in req.authInfo downstream
           req.authInfo = info;
-          return next();
         }
 
         user = await usersModel.findOne({ email: info.preferred_username });
         console.log(user);
         if (user) {
-          req.user = user
-        }
-        else {
-          try{
+          req.user = user;
+          next();
+        } else {
+          try {
             const newUser = await usersService.createUser({
               name: info.name,
               email: info.preferred_username,
-              roles: ["observable"]
-            })
-            req.user = newUser
-          }
-          catch(e:any){
+              roles: ["observable"],
+            });
+            req.user = newUser;
+            next();
+          } catch (e: any) {
             console.error(e);
-            return res.status(404).json(e);
+            return res.status(400).json(e);
           }
-          
-          
         }
       }
     )(req, res, next);
   }
-
 );
 
 app.get("/", (req, res) => {
@@ -212,5 +205,3 @@ app.listen(port, () => {
 });
 
 module.exports = app;
-
-
