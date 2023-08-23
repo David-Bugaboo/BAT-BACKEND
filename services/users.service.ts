@@ -105,6 +105,8 @@ class UsersService {
       throw { code: "001", message: "User not found" };
     }
 
+    usersModel.deleteOne({ email: userEmail });
+
     user.deleteOne();
   }
 

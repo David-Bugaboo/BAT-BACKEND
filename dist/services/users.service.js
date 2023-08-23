@@ -104,6 +104,7 @@ class UsersService {
             if (!user) {
                 throw { code: "001", message: "User not found" };
             }
+            users_model_1.default.deleteOne({ email: userEmail });
             user.deleteOne();
         });
     }

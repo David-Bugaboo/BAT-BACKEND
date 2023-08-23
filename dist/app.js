@@ -46,7 +46,7 @@ const limiter = (0, express_rate_limit_1.default)({
 });
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 /**
  * Enable CORS middleware. In production, modify as to allow only designated origins and methods.
  * If you are using Azure App Service, we recommend removing the line below and configure CORS on the App Service itself.
@@ -124,21 +124,27 @@ app.use("/api", (req, res, next) => {
         if (info) {
             // access token payload will be available in req.authInfo downstream
             req.authInfo = info;
-            console.log("info >>>>", req.authInfo);
-            return next();
         }
         user = yield users_model_1.default.findOne({ email: info.preferred_username });
         console.log(user);
         if (user) {
             req.user = user;
+            next();
         }
         else {
-            const newUser = users_service_1.default.createUser({
-                name: info.name,
-                email: info.preferred_username,
-                roles: ["observable"]
-            });
-            req.user = newUser;
+            try {
+                const newUser = yield users_service_1.default.createUser({
+                    name: info.name,
+                    email: info.preferred_username,
+                    roles: ["observable"],
+                });
+                req.user = newUser;
+                next();
+            }
+            catch (e) {
+                console.error(e);
+                return res.status(400).json(e);
+            }
         }
     }))(req, res, next);
 });
