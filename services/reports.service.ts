@@ -15,7 +15,7 @@ export class ReportsService {
     newReportData: IReport
   ): Promise<IReport> {
     const newReport = new reportsModel({ ...newReportData, userEmail });
-
+    console.log(newReport);
     await newReport.save();
 
     return newReport;
