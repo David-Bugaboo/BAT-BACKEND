@@ -15,16 +15,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const users_model_1 = __importDefault(require("./models/users.model"));
 const reports_routes_1 = require("./routes/reports.routes");
 const users_routes_1 = require("./routes/users.routes");
+const xss_clean_1 = __importDefault(require("xss-clean"));
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const helmet_1 = __importDefault(require("helmet"));
 const passport_1 = __importDefault(require("passport"));
 const passport_azure_ad_1 = __importDefault(require("passport-azure-ad"));
 const database_config_1 = __importDefault(require("./config/database.config"));
 const authConfig_1 = __importDefault(require("./authConfig"));
 const users_service_1 = __importDefault(require("./services/users.service"));
+const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const app = (0, express_1.default)();
+app.use((0, xss_clean_1.default)());
+app.use((0, express_mongo_sanitize_1.default)());
+app.use((0, helmet_1.default)({
+    frameguard: { action: 'deny' },
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", 'trusted-scripts.com'],
+        },
+    },
+}));
 /**
  * If your app is behind a proxy, reverse proxy or a load balancer, consider
  * letting express know that you are behind that proxy. To do so, uncomment
@@ -45,7 +59,6 @@ const limiter = (0, express_rate_limit_1.default)({
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 // Apply the rate limiting middleware to all requests
-app.use(limiter);
 app.set("trust proxy", 1);
 /**
  * Enable CORS middleware. In production, modify as to allow only designated origins and methods.
@@ -159,7 +172,6 @@ app.get("/api/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const me = yield users_model_1.default.findOne({
         email: req.authInfo.preferred_username,
     });
-    console.log(me);
     if (me) {
         return res.status(200).json({ me });
     }

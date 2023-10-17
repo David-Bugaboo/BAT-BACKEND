@@ -25,6 +25,7 @@ class ReportsService {
     createReport(userEmail, newReportData) {
         return __awaiter(this, void 0, void 0, function* () {
             const newReport = new reports_model_1.default(Object.assign(Object.assign({}, newReportData), { userEmail }));
+            console.log(newReport);
             yield newReport.save();
             return newReport;
         });

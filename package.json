@@ -4,7 +4,7 @@
   "description": "A Node.js & Express web API accepting authorized calls with Azure Active Directory",
   "author": "derisen",
   "scripts": {
-    "build": "tsc dist/",
+    "build": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon",
     "test": "jest --forceExit"
