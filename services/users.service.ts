@@ -1,6 +1,6 @@
 import { IUser } from "../interface/users.interface";
 import usersModel from "../models/users.model";
-import { genSalt, hash } from "bcrypt";
+
 import { CreateUserDTO } from "../interface/create-user.dto";
 import axios from "axios";
 import { IUserAnalytic } from "../interface/userAnalytics.interface";
@@ -73,15 +73,12 @@ class UsersService {
   }
 
   async createUser(newUserData: CreateUserDTO) {
-    const salt = await genSalt(10);
     const pass: string =
       process.env.FAKE_PASS === "true" ? "123456" : this.generatePassword();
-
     const newUserSanitized: IUser = {
       name: newUserData.name,
       email: newUserData.email,
       roles: newUserData.roles,
-      password: await hash(pass, salt),
       recoveryPassCode: "",
       signInQuantity: 0,
       watchedVideos: [],
