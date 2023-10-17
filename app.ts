@@ -2,19 +2,32 @@ import reportsModel from "./models/reports.model";
 import usersModel from "./models/users.model";
 import { reportRouter } from "./routes/reports.routes";
 import { usersRouter } from "./routes/users.routes";
-
+import  xss  from "xss-clean"
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-
+import helmet from "helmet"
 import passport from "passport";
 import passportAzureAd from "passport-azure-ad";
 import connectMongo from "./config/database.config";
 import authConfig from "./authConfig";
 import usersService from "./services/users.service";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 const app = express();
+
+app.use(xss());
+app.use(ExpressMongoSanitize());
+app.use(helmet({
+  frameguard: { action: 'deny' },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'trusted-scripts.com'],
+    },
+  },
+}));
 
 /**
  * If your app is behind a proxy, reverse proxy or a load balancer, consider
@@ -39,7 +52,7 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiting middleware to all requests
-app.use(limiter);
+
 
 app.set("trust proxy", 1);
 
@@ -188,7 +201,6 @@ app.get("/api/me", async (req: any, res: any) => {
   const me = await usersModel.findOne({
     email: req.authInfo.preferred_username,
   });
-  console.log(me);
   if (me) {
     return res.status(200).json({ me });
   } else {

@@ -1,7 +1,7 @@
 export const passportConfig = {
   credentials: {
-    tenantID: "d46a1643-0a4e-486c-bc19-100766010a15",
-    clientID: "c1a254d6-bb21-4b68-aded-186d9fec6fcc",
+    tenantID: "ff9c7474-421d-4957-8d47-c4b64dec87b5",
+    clientID: "e5724aa5-5621-4a32-8938-e1a79e579602",
   },
   metadata: {
     authority: "login.microsoftonline.com",
@@ -18,12 +18,10 @@ export const passportConfig = {
     todolist: {
       endpoint: "/api/todolist",
       delegatedPermissions: {
-        read: ["BAT.Read", "BAT.ReadWrite"],
-        write: ["BAT.ReadWrite"],
+        read: ["BAT.Read"],
       },
       applicationPermissions: {
-        read: ["BAT.Read.All", "BAT.ReadWrite.All"],
-        write: ["BAT.ReadWrite.All"],
+        read: ["BAT.Read.All"],
       },
     },
   },
