@@ -39,7 +39,7 @@ app.use("/api", async (req:any, res:Response, next:NextFunction) =>
 
         var token = authHeader && authHeader.split(' ')[1]
 
-        if (token == null) {
+        if (!token) {
             
             return res.json({"message":"no JWT token present"}).status(401);
             
