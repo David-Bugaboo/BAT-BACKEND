@@ -37,7 +37,11 @@ app.use("/api", async (req:any, res:Response, next:NextFunction) =>
 
         var authHeader = req.headers['authorization'];
 
+        console.log("authHeader >>>>>", authHeader)
+
         var token = authHeader && authHeader.split(' ')[1]
+
+        console.log("token >>>>>", token)
 
         if (!token) {
             
