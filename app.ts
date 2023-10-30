@@ -54,22 +54,12 @@ app.use("/api", async (req:any, res:Response, next:NextFunction) =>
         if (user) {
           next();
         } else {
-          try {
-            const newUser = await usersService.createUser({
-              name: decoded.name,
-              email: decoded.preferred_username,
-              roles: ["observable"],
-            });
-            next();
-          } catch (e: any) {
-            console.error(e);
-            return res.status(400).json(e);
-          }
+          return res.json({"message":"user not found"}).status(404);
+        }
 
 
 
-  }
-});
+  });
 app.get("/", (req, res) => {
   return res.status(200).json({ message: `BAT API Project is running` });
 });
