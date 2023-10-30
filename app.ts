@@ -46,18 +46,21 @@ app.use("/api", async (req:any, res:Response, next:NextFunction) =>
         }
        
 
-        const decoded:any  = jwtDecode(token)
-        req.user = decoded
+        try{
+          const decoded:any  = await jwtDecode(token)
+          req.user = decoded
 
-        const user = await usersModel.findOne({ email: decoded.preferred_username });
-        console.log(user)
-        if (user) {
-          next();
-        } else {
-          return res.json({"message":"user not found"}).status(404);
+          const user = await usersModel.findOne({ email: decoded.preferred_username });
+          console.log(user)
+          if (user) {
+            next();
+          } else {
+            return res.json({"message":"user not found"}).status(404);
+          }
         }
-
-
+        catch(error){
+          return res.json({"message":error.message}).status(401)
+        }
 
   });
 app.get("/", (req, res) => {
