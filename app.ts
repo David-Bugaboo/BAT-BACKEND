@@ -1,4 +1,3 @@
-
 import usersModel from "./models/users.model";
 import { reportRouter } from "./routes/reports.routes";
 import { usersRouter } from "./routes/users.routes";
@@ -11,7 +10,7 @@ import connectMongo from "./config/database.config";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import jwtDecode from "jwt-decode";
 import usersService from "./services/users.service";
-
+import enforce from 'express-sslify'
 
 const app = express();
 app.use(xss());
@@ -32,41 +31,39 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
-app.use("/api", async (req:any, res:Response, next:NextFunction) =>
-{ 
 
-        var authHeader = req.headers['authorization'];
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
-        console.log("authHeader >>>>>", authHeader)
+app.use("/api", async (req: any, res: Response, next: NextFunction) => {
+  var authHeader = req.headers["authorization"];
 
-        var token = authHeader && authHeader.split(' ')[1]
+  console.log("authHeader >>>>>", authHeader);
 
-        console.log("token >>>>>", token)
+  var token = authHeader && authHeader.split(" ")[1];
 
-        if (!token) {
-            
-            return res.json({"message":"no JWT token present"}).status(401);
-            
-        }
-       
+  console.log("token >>>>>", token);
 
-        try{
-          const decoded:any  = await jwtDecode(token)
-          req.user = decoded
+  if (!token) {
+    return res.json({ message: "no JWT token present" }).status(401);
+  }
 
-          const user = await usersModel.findOne({ email: decoded.preferred_username });
-          console.log(user)
-          if (user) {
-            next();
-          } else {
-            return res.json({"message":"user not found"}).status(404);
-          }
-        }
-        catch(error){
-          return res.json({"message":error.message}).status(401)
-        }
+  try {
+    const decoded: any = await jwtDecode(token);
+    req.user = decoded;
 
-  });
+    const user = await usersModel.findOne({
+      email: decoded.preferred_username,
+    });
+    console.log(user);
+    if (user) {
+      next();
+    } else {
+      return res.json({ message: "user not found" }).status(404);
+    }
+  } catch (error) {
+    return res.json({ message: error.message }).status(401);
+  }
+});
 app.get("/", (req, res) => {
   return res.status(200).json({ message: `BAT API Project is running` });
 });
@@ -74,7 +71,7 @@ app.use("/api", usersRouter);
 app.use("/api", reportRouter);
 app.get("/api/me", async (req: any, res: any) => {
   const me = await usersModel.findOne({
-    email: req.user.preferred_username, 
+    email: req.user.preferred_username,
   });
   if (me) {
     return res.status(200).json({ me });

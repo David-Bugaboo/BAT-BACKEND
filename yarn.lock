@@ -665,6 +665,23 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
+"@types/express-sslify@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@types/express-sslify/-/express-sslify-1.2.5.tgz#1ee100084d8563ff46feabf0af54c072170f99c4"
+  integrity sha512-SxezXJqojxyTkkemmPQ9bUZQ3xLpzasA/I7bSTqt7tF6L4KNvfOlmcwjZ38tSolkf3oeQu20UVXh74ZBb8IUZA==
+  dependencies:
+    "@types/express" "*"
+
+"@types/express@*":
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.21.tgz#c26d4a151e60efe0084b23dc3369ebc631ed192d"
+  integrity sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "^4.17.33"
+    "@types/qs" "*"
+    "@types/serve-static" "*"
+
 "@types/express@^4.17.17":
   version "4.17.17"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.17.tgz#01d5437f6ef9cfa8668e616e13c2f2ac9a491ae4"
@@ -1519,6 +1536,11 @@ express-rate-limit@^6.5.2:
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-6.10.0.tgz#e881fcfb1d2a5b364e4850bacb333d537b05e414"
   integrity sha512-CtGn2IyklQnIWpA4pcRaovXkNR8psDQ9Fa0y5u7Yhz5TL74dNsm7oXpfm1HPKUYiNe5w0TPEyNbIrvNVU/xUIg==
+
+express-sslify@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/express-sslify/-/express-sslify-1.2.0.tgz#30e84bceed1557eb187672bbe1430a0a2a100d9c"
+  integrity sha512-OOf2B3MxAVjEXPPWl4Z19wA2oMH+RCULJVhejPwuhiDDClr9QczZz5ycABLSnnN+oY8JcLs32ghs9cxOj0vi+w==
 
 express@^4.18.1:
   version "4.18.2"
