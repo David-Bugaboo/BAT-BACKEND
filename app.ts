@@ -10,7 +10,8 @@ import connectMongo from "./config/database.config";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import jwtDecode from "jwt-decode";
 import usersService from "./services/users.service";
-import enforce from 'express-sslify'
+import enforce from "express-sslify";
+
 
 const app = express();
 app.use(xss());
@@ -31,9 +32,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
-
+app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true }));
 app.use(enforce.HTTPS({ trustProtoHeader: true }));
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", 'trusted-scripts.com'],
+    objectSrc: ["'none'"]
+  },
+}));
+app.use(helmet.frameguard({ action: 'deny' }));
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
+app.use((req, res, next) => {
+  res.header('X-Frame-Options', 'DENY');
+  next();
+});
 app.use("/api", async (req: any, res: Response, next: NextFunction) => {
   var authHeader = req.headers["authorization"];
 
