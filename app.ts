@@ -11,7 +11,7 @@ import ExpressMongoSanitize from "express-mongo-sanitize";
 import jwtDecode from "jwt-decode";
 import usersService from "./services/users.service";
 import enforce from "express-sslify";
-
+import { authRouter } from "./routes/auth.routes";
 
 const app = express();
 app.use(xss());
@@ -34,18 +34,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true }));
 app.use(enforce.HTTPS({ trustProtoHeader: true }));
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", 'trusted-scripts.com'],
-    objectSrc: ["'none'"]
-  },
-}));
-app.use(helmet.frameguard({ action: 'deny' }));
-app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "trusted-scripts.com"],
+      objectSrc: ["'none'"],
+    },
+  })
+);
+app.use(helmet.frameguard({ action: "deny" }));
+app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
 app.use((req, res, next) => {
-  res.header('X-Frame-Options', 'DENY');
+  res.header("X-Frame-Options", "DENY");
   next();
 });
 app.use("/api", async (req: any, res: Response, next: NextFunction) => {
@@ -81,6 +83,7 @@ app.use("/api", async (req: any, res: Response, next: NextFunction) => {
 app.get("/", (req, res) => {
   return res.status(200).json({ message: `BAT API Project is running` });
 });
+app.use("/", authRouter)
 app.use("/api", usersRouter);
 app.use("/api", reportRouter);
 app.get("/api/me", async (req: any, res: any) => {
