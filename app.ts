@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true }));
-app.use(enforce.HTTPS({ trustProtoHeader: true }));
+//app.use(enforce.HTTPS({ trustProtoHeader: true }));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -74,7 +74,17 @@ app.use("/api", async (req: any, res: Response, next: NextFunction) => {
     if (user) {
       next();
     } else {
-      return res.json({ message: "user not found" }).status(404);
+      try {
+        const newUser = await usersService.createUser({
+          name: decoded.name,
+          email: decoded.preferred_username,
+          roles: ["observable"],
+        });
+        next();
+      } catch (e: any) {
+        console.error(e);
+        return res.status(400).json(e);
+      }
     }
   } catch (error) {
     return res.json({ message: error.message }).status(401);
@@ -83,7 +93,7 @@ app.use("/api", async (req: any, res: Response, next: NextFunction) => {
 app.get("/", (req, res) => {
   return res.status(200).json({ message: `BAT API Project is running` });
 });
-app.use("/", authRouter)
+app.use("/", authRouter);
 app.use("/api", usersRouter);
 app.use("/api", reportRouter);
 app.get("/api/me", async (req: any, res: any) => {
