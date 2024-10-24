@@ -77,7 +77,7 @@ class UsersService {
     const newUserSanitized: IUser = {
       name: newUserData.name,
       email: newUserData.email,
-      password: pass,
+      password:  await hash(pass, salt),
       roles: newUserData.roles,
       recoveryPassCode: "",
       signInQuantity: 0,
