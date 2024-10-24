@@ -73,11 +73,11 @@ class UsersService {
   }
 
   async createUser(newUserData: CreateUserDTO) {
-    const pass: string =
-      process.env.FAKE_PASS === "true" ? "123456" : this.generatePassword();
+    const pass: string = this.generatePassword();
     const newUserSanitized: IUser = {
       name: newUserData.name,
       email: newUserData.email,
+      password: pass,
       roles: newUserData.roles,
       recoveryPassCode: "",
       signInQuantity: 0,
@@ -89,8 +89,6 @@ class UsersService {
     await newUser.save();
 
     this.sendUserEmail(newUserData.email, pass);
-
-    
 
     return newUser;
   }
