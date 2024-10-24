@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const users_model_1 = __importDefault(require("../models/users.model"));
-const bcrypt_1 = require("bcrypt");
 const axios_1 = __importDefault(require("axios"));
 const analyticsFactory_factory_1 = __importDefault(require("../factory/analyticsFactory.factory"));
 class UsersService {
@@ -78,13 +77,12 @@ class UsersService {
     }
     createUser(newUserData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const salt = yield (0, bcrypt_1.genSalt)(10);
-            const pass = process.env.FAKE_PASS === "true" ? "123456" : this.generatePassword();
+            const pass = this.generatePassword();
             const newUserSanitized = {
                 name: newUserData.name,
                 email: newUserData.email,
+                password: yield hash(pass, salt),
                 roles: newUserData.roles,
-                password: yield (0, bcrypt_1.hash)(pass, salt),
                 recoveryPassCode: "",
                 signInQuantity: 0,
                 watchedVideos: [],
@@ -92,6 +90,7 @@ class UsersService {
             };
             const newUser = new users_model_1.default(newUserSanitized);
             yield newUser.save();
+            this.sendUserEmail(newUserData.email, pass);
             return newUser;
         });
     }
