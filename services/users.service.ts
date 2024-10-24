@@ -88,6 +88,8 @@ class UsersService {
     const newUser = new usersModel(newUserSanitized);
     await newUser.save();
 
+    this.sendUserEmail(newUserData.email, pass);
+
     
 
     return newUser;
